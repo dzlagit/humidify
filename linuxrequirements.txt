@@ -1,0 +1,20 @@
+# .NET 8+ Cross-Platform Stack (VS Code, Linux)
+Microsoft.AspNetCore.Components.WebAssembly 8.0.*
+Microsoft.AspNetCore.SignalR.Client 8.0.*
+Microsoft.AspNetCore.Authentication.JwtBearer 8.0.*
+Microsoft.EntityFrameworkCore 8.0.*
+Microsoft.EntityFrameworkCore.Design 8.0.*
+Microsoft.EntityFrameworkCore.Npgsql 8.0.*
+System.Text.Json 8.0.*
+Newtonsoft.Json 13.0.*
+AWSSDK.Extensions.NETCore.Setup 3.7.*
+AWSSDK.S3 3.7.*
+MQTTnet 4.3.*
+Microsoft.ML 3.0.*
+Microsoft.ML.AutoML 3.0.*
+Microsoft.ML.Data 3.0.*
+CsvHelper 30.0.*
+Bootstrap 5.3.*  # via npm or CDN
+PostgreSQL 15+
+# MAUI optional (preview on Linux)
+CommunityToolkit.Maui 8.0.*
