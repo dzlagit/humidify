@@ -1,0 +1,6 @@
+#  install all dependencies
+dotnet restore
+
+# update all packages to latest allowed versions
+dotnet list package --outdated
+dotnet add package <PackageName> --version <version>
