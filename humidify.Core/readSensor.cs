@@ -1,0 +1,1 @@
+//humidity = double, temperature = float.

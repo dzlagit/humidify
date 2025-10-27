@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "humidify.Core", "humidify.Core\humidify.Core.csproj", "{AC0C711B-5755-7776-1AD9-CC34FF897AA4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AC0C711B-5755-7776-1AD9-CC34FF897AA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC0C711B-5755-7776-1AD9-CC34FF897AA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC0C711B-5755-7776-1AD9-CC34FF897AA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC0C711B-5755-7776-1AD9-CC34FF897AA4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7C7379B6-B65B-44C3-AE4C-FB1B0E76947C}
+	EndGlobalSection
+EndGlobal
