@@ -1,6 +1,8 @@
 @humidify.Api_HostAddress = http://localhost:5091
 
-GET {{humidify.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+POST {{humidify.Api_HostAddress}}/api/sensor/reading
+Content-Type: application/json
 
-###
+
+GET {{humidify.Api_HostAddress}}/api/sensor/latest
+Accept: application/json
