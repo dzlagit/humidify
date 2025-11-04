@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "humidify.Api", "humidify.Ap
 		{AC0C711B-5755-7776-1AD9-CC34FF897AA4} = {AC0C711B-5755-7776-1AD9-CC34FF897AA4}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "humidify.Web", "humidify.Web\humidify.Web.csproj", "{C9CC4CAD-A5DC-47FB-BBEF-00AEA3E1FF0F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{89CE87BB-B27C-4244-B3A3-BB892D470C40}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89CE87BB-B27C-4244-B3A3-BB892D470C40}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89CE87BB-B27C-4244-B3A3-BB892D470C40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9CC4CAD-A5DC-47FB-BBEF-00AEA3E1FF0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9CC4CAD-A5DC-47FB-BBEF-00AEA3E1FF0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9CC4CAD-A5DC-47FB-BBEF-00AEA3E1FF0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9CC4CAD-A5DC-47FB-BBEF-00AEA3E1FF0F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

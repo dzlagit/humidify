@@ -1,0 +1,59 @@
+body {
+    background-image: url('/images/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    margin: 0;
+}
+.dashboard-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    padding: 24px;
+    justify-content: center;
+}
+.sensor-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 250px;
+    padding: 20px;
+    text-align: center;
+    border-top: 5px solid;
+}
+    .sensor-card .card-header {
+        font-size: 1.25rem;
+        font-weight: 500;
+        color: #333333; 
+        margin-bottom: 16px;
+    }
+    .sensor-card .card-body .value {
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: #000000;
+        line-height: 1;
+    }
+
+    .sensor-card .card-body .unit {
+        font-size: 1.5rem;
+        color: #555555;
+        margin-left: 4px;
+    }
+    .sensor-card.temperature {
+        border-top-color: #fa824c; 
+    }
+    .sensor-card.humidity {
+        border-top-color: #24a1e0; 
+    }
+
+.last-reading-time {
+    width: 100%; 
+    text-align: center;
+    margin-top: 20px;
+    font-style: normal; 
+    font-weight: bold; 
+    color: #FFFFFF; 
+    font-size: 1rem; 
+}

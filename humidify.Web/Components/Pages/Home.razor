@@ -1,0 +1,106 @@
+﻿@page "/"
+@inject IHttpClientFactory HttpClientFactory
+@using humidify.Core
+@using System.Timers
+@implements IDisposable
+
+@rendermode InteractiveServer
+
+<PageTitle>Dashboard</PageTitle>
+
+@if (isLoading)
+{
+    <p><em>latest data loading...</em></p>
+}
+else if (errorMessage != null)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+else
+{
+    <div class="dashboard-container">
+        <div class="sensor-card temperature">
+            <div class="card-header">
+                Temperature
+            </div>
+            <div class="card-body">
+                <span class="value">@currentTemperature</span>
+                <span class="unit">°C</span>
+            </div>
+        </div>
+
+        <div class="sensor-card humidity">
+            <div class="card-header">
+                Humidity
+            </div>
+            <div class="card-body">
+                <span class="value">@currentHumidity</span>
+                <span class="unit">%</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="last-reading-time">
+        Last reading: @lastReadingTime
+    </div>
+}
+
+@code {
+    private string currentTemperature = "--";
+    private string currentHumidity = "--";
+    private string lastReadingTime = "";
+    private string? errorMessage;
+    private bool isLoading = true;
+
+    private SensorReading? latestReading;
+
+    private Timer? _timer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDataAsync();
+        _timer = new Timer(30000); // 30 seconds
+        _timer.Elapsed += async (sender, e) => await OnTimerTick();
+        _timer.AutoReset = true;
+        _timer.Enabled = true;
+    }
+
+    private async Task OnTimerTick()
+    {
+        await LoadDataAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task LoadDataAsync()
+    {
+        try
+        {
+            var client = HttpClientFactory.CreateClient("Api");
+            latestReading = await client.GetFromJsonAsync<SensorReading>("api/sensor/latest");
+
+            if (latestReading != null)
+            {
+                currentTemperature = latestReading.Temperature.ToString("0.0");
+                currentHumidity = latestReading.Humidity.ToString("0.0");
+                lastReadingTime = latestReading.Timestamp.ToLocalTime().ToString("h:mm tt, d MMM yyyy");
+                errorMessage = null;
+            }
+            else
+            {
+                errorMessage = "No data found.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to connect to API, Error: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+    public void Dispose()
+    {
+        _timer?.Dispose();
+    }
+}
