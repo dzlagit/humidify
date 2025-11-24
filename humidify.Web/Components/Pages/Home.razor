@@ -1,7 +1,8 @@
 ﻿@page "/"
-@inject IHttpClientFactory HttpClientFactory
-@using humidify.Core
-@using System.Timers
+@page "/home"
+@inject humidify.Web.Services.ISensorDataService SensorDataService
+@using humidify.Core.Models
+@using System.Threading
 @implements IDisposable
 
 @rendermode InteractiveServer
@@ -43,6 +44,8 @@ else
     <div class="last-reading-time">
         Last reading: @lastReadingTime
     </div>
+
+
 }
 
 @code {
@@ -51,32 +54,87 @@ else
     private string lastReadingTime = "";
     private string? errorMessage;
     private bool isLoading = true;
-
     private SensorReading? latestReading;
 
-    private Timer? _timer;
+    // Flag to prevent StateHasChanged from running after disposal
+    private bool _isDisposed = false;
+
+    // CancellationTokenSource for safe cancellation
+    private CancellationTokenSource? cts;
+
+    // Time interval for refresh (30 seconds)
+    private static readonly TimeSpan RefreshInterval = TimeSpan.FromSeconds(30);
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadDataAsync();
-        _timer = new Timer(30000); // 30 seconds
-        _timer.Elapsed += async (sender, e) => await OnTimerTick();
-        _timer.AutoReset = true;
-        _timer.Enabled = true;
+        // 1. Clean up potential leftover resources from a previous, failed circuit attempt.
+        cts?.Cancel();
+        cts?.Dispose();
+
+        // 2. Initialize fresh resources for this new component instance.
+        _isDisposed = false;
+        cts = new CancellationTokenSource();
+        CancellationToken token = cts.Token;
+
+        // 3. Load initial data
+        await LoadDataAsync(token);
+
+        // 4. Start the background loop safely, not awaiting the task.
+        _ = StartDataRefreshLoop(token);
     }
 
-    private async Task OnTimerTick()
+    private async Task StartDataRefreshLoop(CancellationToken cancellationToken)
     {
-        await LoadDataAsync();
-        await InvokeAsync(StateHasChanged);
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            try
+            {
+                // Wait for the refresh interval
+                await Task.Delay(RefreshInterval, cancellationToken);
+
+                if (cancellationToken.IsCancellationRequested) return;
+
+                // CRITICAL FIX: Use InvokeAsync to run data fetching and StateHasChanged
+                // on the Blazor Synchronization Context for safe UI updates.
+                if (!_isDisposed)
+                {
+                    await InvokeAsync(async () =>
+                    {
+                        await LoadDataAsync(cancellationToken);
+                        // StateHasChanged is called explicitly here to force a UI re-render
+                        StateHasChanged();
+                    });
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                break; // Expected cleanup path on disposal.
+            }
+            catch (Exception ex)
+            {
+                if (!_isDisposed)
+                {
+                    // Update error message on the UI thread
+                    await InvokeAsync(() =>
+                    {
+                        errorMessage = $"Error in refresh loop: {ex.Message}";
+                        StateHasChanged();
+                    });
+                    // Wait 5 seconds before retrying
+                    await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+                }
+            }
+        }
     }
 
-    private async Task LoadDataAsync()
+    private async Task LoadDataAsync(CancellationToken cancellationToken)
     {
         try
         {
-            var client = HttpClientFactory.CreateClient("Api");
-            latestReading = await client.GetFromJsonAsync<SensorReading>("api/sensor/latest");
+            // Use the injected service
+            latestReading = await SensorDataService.GetLatestReadingAsync();
+
+            if (_isDisposed) return;
 
             if (latestReading != null)
             {
@@ -87,20 +145,32 @@ else
             }
             else
             {
-                errorMessage = "No data found.";
+                errorMessage = "No data found. Ensure the API is running and has data.";
             }
+        }
+        catch (TaskCanceledException)
+        {
+            // Expected when the component is disposed.
         }
         catch (Exception ex)
         {
-            errorMessage = $"Failed to connect to API, Error: {ex.Message}";
+            if (isLoading && !_isDisposed)
+            {
+                errorMessage = $"Failed to fetch data. Error: {ex.Message}";
+            }
         }
         finally
         {
             isLoading = false;
         }
     }
+
     public void Dispose()
     {
-        _timer?.Dispose();
+        _isDisposed = true;
+        cts?.Cancel();
+        cts?.Dispose();
     }
+
+
 }

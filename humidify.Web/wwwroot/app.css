@@ -6,7 +6,12 @@ body {
     background-attachment: fixed;
     min-height: 100vh;
     margin: 0;
+    color: #f0f0f0;
 }
+h1, h2, h3, h4, h5, h6 {
+    color: #ffffff;
+}
+
 .dashboard-container {
     display: flex;
     flex-wrap: wrap;
@@ -14,6 +19,7 @@ body {
     padding: 24px;
     justify-content: center;
 }
+
 .sensor-card {
     background-color: #ffffff;
     border-radius: 12px;
@@ -23,12 +29,14 @@ body {
     text-align: center;
     border-top: 5px solid;
 }
+
     .sensor-card .card-header {
         font-size: 1.25rem;
         font-weight: 500;
-        color: #333333; 
+        color: #333333;
         margin-bottom: 16px;
     }
+
     .sensor-card .card-body .value {
         font-size: 3.5rem;
         font-weight: 700;
@@ -41,19 +49,61 @@ body {
         color: #555555;
         margin-left: 4px;
     }
+
     .sensor-card.temperature {
-        border-top-color: #fa824c; 
+        border-top-color: #fa824c;
     }
+
     .sensor-card.humidity {
-        border-top-color: #24a1e0; 
+        border-top-color: #24a1e0;
     }
 
 .last-reading-time {
-    width: 100%; 
+    width: 100%;
     text-align: center;
     margin-top: 20px;
-    font-style: normal; 
-    font-weight: bold; 
-    color: #FFFFFF; 
-    font-size: 1rem; 
+    font-style: normal;
+    font-weight: bold;
+    color: #FFFFFF;
+    font-size: 1rem;
 }
+
+.form-label {
+    color: #ffffff !important;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+input.form-control, textarea.form-control {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    padding: 10px 15px;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.form-control:focus {
+    background-color: rgba(255, 255, 255, 0.25) !important;
+    border-color: #24a1e0;
+    box-shadow: 0 0 0 0.25rem rgba(36, 161, 224, 0.25);
+    color: #ffffff;
+}
+
+.btn-primary {
+    background-color: #24a1e0;
+    border-color: #24a1e0;
+    color: #ffffff;
+    padding: 10px 20px;
+    font-weight: bold;
+    border-radius: 6px;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+    .btn-primary:hover {
+        background-color: #1a7bb0;
+        border-color: #1a7bb0;
+    }

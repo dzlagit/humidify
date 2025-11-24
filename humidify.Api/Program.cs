@@ -1,16 +1,18 @@
 using humidify.Api.Data;
+using humidify.Api.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
 
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<humidify.Api.Data.ApplicationDbContext>(options =>
+
+builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

@@ -1,7 +1,7 @@
-﻿using humidify.Api.Data; // Your DbContext
-using humidify.Core;       // Your SensorReading model
+﻿using humidify.Api.Data;
+using humidify.Core.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore; // You need this for FirstOrDefaultAsync
+using Microsoft.EntityFrameworkCore;
 
 namespace humidify.Api.Controllers
 {
@@ -9,15 +9,18 @@ namespace humidify.Api.Controllers
     [ApiController]
     public class SensorController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly AppDbContext _context;
+        private readonly ILogger<SensorController> _logger;
 
-        public SensorController(ApplicationDbContext context)
+        public SensorController(AppDbContext context, ILogger<SensorController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
-        // POST: api/sensor/reading
-        [HttpPost("reading")]
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PostSensorReading([FromBody] SensorReading reading)
         {
             if (!ModelState.IsValid)
@@ -25,37 +28,31 @@ namespace humidify.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            try
+            if (reading.Timestamp == default)
             {
-                // Set the timestamp to the current server time
                 reading.Timestamp = DateTime.UtcNow;
-
-                // Add the new reading to the database
-                _context.SensorReadings.Add(reading); // Corrected: SensorReadings
-                await _context.SaveChangesAsync();
-
-                // Return a "201 Created" response
-                // We use the "GetLatestReading" method name here
-                return CreatedAtAction(nameof(GetLatestReading), new { id = reading.Id }, reading);
             }
-            catch (Exception ex)
-            {
-                // Return an error if something goes wrong
-                return StatusCode(500, "Internal server error: " + ex.Message);
-            }
+
+            _logger.LogInformation("Received new sensor reading: Temp={temp}°C, Humidity={hum}% at {time}",
+                reading.Temperature, reading.Humidity, reading.Timestamp.ToString("s"));
+            _context.SensorReadings.Add(reading);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetLatestReading), reading);
         }
 
-        // GET: api/sensor/latest
         [HttpGet("latest")]
-        public async Task<IActionResult> GetLatestReading()
-        { // The typo was here
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<SensorReading>> GetLatestReading()
+        {
             var latestReading = await _context.SensorReadings
-                                              .OrderByDescending(r => r.Timestamp)
-                                              .FirstOrDefaultAsync();
+                .OrderByDescending(r => r.Timestamp)
+                .FirstOrDefaultAsync();
 
             if (latestReading == null)
             {
-                return NotFound("No readings found.");
+                _logger.LogWarning("no data found");
+                return NotFound();
             }
 
             return Ok(latestReading);
