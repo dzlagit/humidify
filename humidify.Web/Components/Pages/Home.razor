@@ -150,7 +150,7 @@ else
         }
         catch (TaskCanceledException)
         {
-            // Expected when the component is disposed.
+            // ignore cancellation exceptions
         }
         catch (Exception ex)
         {
