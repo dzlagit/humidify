@@ -3,20 +3,20 @@ using humidify.Web.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents()
-.AddInteractiveServerComponents();
+    .AddInteractiveServerComponents();
+
+var apiBaseUrl = builder.Configuration["ApiBaseUrl"]
+    ?? throw new Exception("ApiBaseUrl is not configured.");
 
 builder.Services.AddHttpClient("Api", client =>
 {
-    client.BaseAddress = new Uri("http://humidify-api.eu-west-1.elasticbeanstalk.com");
+    client.BaseAddress = new Uri(apiBaseUrl);
 });
 
-// CRITICAL FIX: Register the Sensor Data Service for Dependency Injection
-// This tells Blazor: "When Home.razor asks for ISensorDataService, give it a SensorDataService."
 builder.Services.AddScoped<ISensorDataService, SensorDataService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
@@ -24,11 +24,10 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<humidify.Web.Components.App>()
-.AddInteractiveServerRenderMode();
+    .AddInteractiveServerRenderMode();
 
 app.Run();
