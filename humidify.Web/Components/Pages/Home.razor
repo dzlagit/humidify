@@ -108,19 +108,18 @@ else
             }
             catch (TaskCanceledException)
             {
-                break; // Expected cleanup path on disposal.
+                break; 
             }
             catch (Exception ex)
             {
                 if (!_isDisposed)
                 {
-                    // Update error message on the UI thread
+                    // update error message on the UI thread
                     await InvokeAsync(() =>
                     {
                         errorMessage = $"Error in refresh loop: {ex.Message}";
                         StateHasChanged();
                     });
-                    // Wait 5 seconds before retrying
                     await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
                 }
             }
@@ -131,7 +130,6 @@ else
     {
         try
         {
-            // Use the injected service
             latestReading = await SensorDataService.GetLatestReadingAsync();
 
             if (_isDisposed) return;

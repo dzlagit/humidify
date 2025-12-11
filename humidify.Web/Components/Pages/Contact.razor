@@ -56,7 +56,6 @@
     [Inject]
     private IHttpClientFactory HttpClientFactory { get; set; } = default!;
 
-    // Uses ContactMessage DTO from the humidify.Core.Models namespace
     private ContactMessage ContactForm = new();
     private string Message = string.Empty;
     private string statusClass = string.Empty;
@@ -76,7 +75,7 @@
 
             if (response.IsSuccessStatusCode)
             {
-                Message = "Message sent successfully! (Check your API console for the logged message.)";
+                Message = "Message sent successfully!)";
                 statusClass = "alert-success";
                 ContactForm = new ContactMessage();
             }

@@ -5,10 +5,8 @@ namespace humidify.Web.Services
 {
     public class SensorDataService : ISensorDataService
     {
-        // CHANGE 1: Must use IHttpClientFactory
         private readonly IHttpClientFactory _httpClientFactory;
 
-        // CHANGE 2: Request IHttpClientFactory in the constructor
         public SensorDataService(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
